@@ -29,7 +29,7 @@ body{background:linear-gradient(125deg,#fff8dc 0%,#fff9e8 46%,#f0e5fc 100%);min-
 /* Keep the canvas ratio exact, including the surrounding border. */
 .board-wrap{aspect-ratio:auto}canvas{height:auto}
 /* Touch tablets can report a desktop-width viewport, especially in landscape. */
-@media(max-width:1100px),(hover:none) and (pointer:coarse){
+@media(max-width:1100px),(any-pointer:coarse){
   .shell{max-width:540px;padding:0 16px}
   .topbar{height:68px;gap:10px}
   .brand{font-size:24px;white-space:nowrap}
@@ -53,3 +53,7 @@ body{background:linear-gradient(125deg,#fff8dc 0%,#fff9e8 46%,#f0e5fc 100%);min-
   .level-icon,.level:last-child .level-icon{width:36px;height:36px;flex-basis:36px;margin:0}
   .level-name{writing-mode:horizontal-tb;font-size:12px;letter-spacing:0}
 }
+
+/* Multi-touch and explicitly requested compact mode also cover desktop-style iPad browsers. */
+:root.touch-layout .shell{max-width:540px;padding:0 16px}:root.touch-layout .topbar{height:68px;gap:10px}:root.touch-layout .brand{font-size:24px;white-space:nowrap}:root.touch-layout .brand-icon{width:37px;height:37px;flex-basis:37px}:root.touch-layout .edition,:root.touch-layout .intro,:root.touch-layout .evolution h2{display:none}:root.touch-layout .audio-controls{gap:6px}:root.touch-layout .audio-controls .icon-button{font-size:12px;padding:8px}:root.touch-layout .audio-controls .icon-button span{margin-left:5px}:root.touch-layout .community-note{font-size:12px;padding-top:8px}:root.touch-layout .game-layout{display:flex;flex-direction:column;gap:20px;padding:18px 0 26px;width:100%;width:min(100%,max(300px,calc((100svh - 210px)*.685714)));margin:auto}:root.touch-layout .play-column,:root.touch-layout .evolution{width:100%;min-width:0}:root.touch-layout .scorebar{padding:0 4px 14px;gap:24px}:root.touch-layout .scorebar strong{font-size:30px}:root.touch-layout .next-orb{width:42px;height:42px}:root.touch-layout .board-wrap{border-radius:22px}:root.touch-layout .board-footer{margin-top:16px;font-size:12px}:root.touch-layout .board-hint{font-size:13px;top:42%}:root.touch-layout .evolution-heading{margin-bottom:10px}:root.touch-layout .levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}:root.touch-layout .level{flex-direction:column;gap:6px;padding:8px 2px;border-radius:9px;min-width:0}:root.touch-layout .level-icon,:root.touch-layout .level:last-child .level-icon{width:36px;height:36px;flex-basis:36px;margin:0}:root.touch-layout .level-name{writing-mode:horizontal-tb;font-size:12px;letter-spacing:0}
+

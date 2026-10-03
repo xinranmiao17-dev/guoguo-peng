@@ -16,25 +16,46 @@
   const loadingMessage = '果果头像加载中…';
   $('status').textContent = loadingMessage;
   const imageReady = Promise.all(levels.map((level, index) => new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => {
-      const [x, y, side] = level.crop || [0, 0, Math.min(img.naturalWidth, img.naturalHeight)];
-      const tile = document.createElement('canvas'); tile.width = tile.height = 640;
-      const painter = tile.getContext('2d');
-      painter.beginPath(); painter.arc(320, 320, 320, 0, Math.PI * 2); painter.clip();
-      painter.drawImage(img, x, y, side, side, 0, 0, 640, 640);
-      textures[index] = tile;
-      try {
-        const thumb = document.createElement('canvas'); thumb.width = thumb.height = 96;
-        thumb.getContext('2d').drawImage(tile, 0, 0, 96, 96);
-        thumbnailURLs[index] = thumb.toDataURL('image/png');
-      } catch { if (!level.crop) thumbnailURLs[index] = level.image; }
-      loadedCount++;
-      // Show each ready portrait immediately, even when another download is slow.
-      updateUI(); resolve();
-    };
-    img.onerror = () => resolve();
-    img.src = level.image;
+    const fallback = level.fallbackImage || level.image;
+    const sources = [level.image, fallback, fallback + '?retry=ipad13'];
+    let attempt = 0, finished = false;
+    function load() {
+      const request = attempt, img = new Image();
+      let timer;
+      function fail() {
+        if (finished || request !== attempt) return;
+        clearTimeout(timer); img.onload = img.onerror = null;
+        attempt++;
+        if (attempt < sources.length) load();
+        else { finished = true; resolve(); }
+      }
+      img.onload = () => {
+        if (finished || request !== attempt) return;
+        clearTimeout(timer);
+        try {
+          // Reuse decoded portraits rather than allocating two canvases per image.
+          // Only the unchanged ep screenshot needs a square crop.
+          if (level.crop) {
+            const [x,y,side] = level.crop;
+            const tile = document.createElement('canvas'); tile.width = tile.height = 640;
+            const painter = tile.getContext('2d');
+            painter.drawImage(img,x,y,side,side,0,0,640,640);
+            const thumb = document.createElement('canvas'); thumb.width = thumb.height = 96;
+            thumb.getContext('2d').drawImage(tile,0,0,96,96);
+            thumbnailURLs[index] = thumb.toDataURL('image/png');
+            textures[index] = tile;
+          } else {
+            textures[index] = img;
+            thumbnailURLs[index] = img.src;
+          }
+          finished = true; loadedCount++; updateUI(); resolve();
+        } catch { fail(); }
+      };
+      img.onerror = fail;
+      timer = setTimeout(fail,15000);
+      img.src = sources[attempt];
+    }
+    load();
   })));
   imageReady.then(() => {
     if ($('status').textContent !== loadingMessage) return;
@@ -47,7 +68,8 @@
   function randomLevel() {
     const roll = Math.random(); let cumulative = 0;
     for (let i = 0; i < config.dropWeights.length; i++) { cumulative += config.dropWeights[i]; if (roll < cumulative) return i; }
-    return config.dropWeights.findLastIndex(weight => weight > 0);
+    for (let i = config.dropWeights.length - 1; i >= 0; i--) if (config.dropWeights[i] > 0) return i;
+    return 0;
   }
   function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
   function updateUI() {
