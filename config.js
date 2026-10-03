@@ -1,7 +1,7 @@
 /* 九级团子；半径以游戏坐标为单位。末三级只能合成。 */
 window.GAME_CONFIG = {
   "boardWidth": 480,
-  "boardHeight": 620,
+  "boardHeight": 660,
   "dropWeights": [
     0.15,
     0.15,
