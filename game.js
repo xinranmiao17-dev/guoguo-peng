@@ -13,6 +13,8 @@
   const heldKeys = new Set();
   const textures = levels.map(() => null), thumbnailURLs = levels.map(() => '');
   let loadedCount = 0;
+  const loadingMessage = '果果头像加载中…';
+  $('status').textContent = loadingMessage;
   const imageReady = Promise.all(levels.map((level, index) => new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
@@ -27,12 +29,19 @@
         thumb.getContext('2d').drawImage(tile, 0, 0, 96, 96);
         thumbnailURLs[index] = thumb.toDataURL('image/png');
       } catch { if (!level.crop) thumbnailURLs[index] = level.image; }
-      loadedCount++; resolve();
+      loadedCount++;
+      // Show each ready portrait immediately, even when another download is slow.
+      updateUI(); resolve();
     };
     img.onerror = () => resolve();
     img.src = level.image;
   })));
-  imageReady.then(() => { updateUI(); if (loadedCount !== levels.length) $('status').textContent = '部分素材未加载成功，可刷新重试。'; });
+  imageReady.then(() => {
+    if ($('status').textContent !== loadingMessage) return;
+    $('status').textContent = loadedCount === levels.length
+      ? '找准落点，让相同的果果相遇。'
+      : '部分头像未加载成功，刷新可重试。';
+  });
   try { best = Math.max(0, Number(localStorage.getItem('guoguo-nine-v2-best')) || 0); } catch {}
   $('best').textContent = best;
   function randomLevel() {

@@ -25,49 +25,49 @@ window.GAME_CONFIG = {
       "name": "果小戒",
       "color": "#f4d884",
       "radius": 22,
-      "image": "guo-01-bubble.png"
+      "image": "guo-01-bubble.webp"
     },
     {
       "name": "呆呆果",
       "color": "#ead69d",
       "radius": 31,
-      "image": "guo-08-daidai.png"
+      "image": "guo-08-daidai.webp"
     },
     {
       "name": "福瑞果",
       "color": "#cfb3ea",
       "radius": 43,
-      "image": "guo-02-bubble.png"
+      "image": "guo-02-bubble.webp"
     },
     {
       "name": "萌萌果",
       "color": "#beb4df",
       "radius": 58,
-      "image": "guo-03-bubble.png"
+      "image": "guo-03-bubble.webp"
     },
     {
       "name": "小罗宾",
       "color": "#b7bed3",
       "radius": 77,
-      "image": "guo-04-bubble.png"
+      "image": "guo-04-bubble.webp"
     },
     {
       "name": "开心果",
       "color": "#f8e6a3",
       "radius": 100,
-      "image": "guo-05-head.png"
+      "image": "guo-05-head.webp"
     },
     {
       "name": "礼帽果",
       "color": "#cbb9de",
       "radius": 130,
-      "image": "guo-09-limao.png"
+      "image": "guo-09-limao.webp"
     },
     {
       "name": "团团果",
       "color": "#ead4c0",
       "radius": 168,
-      "image": "guo-06-head.png"
+      "image": "guo-06-head.webp"
     },
     {
       "name": "ep果",

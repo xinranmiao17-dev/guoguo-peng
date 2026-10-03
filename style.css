@@ -25,3 +25,31 @@ body{background:linear-gradient(125deg,#fff8dc 0%,#fff9e8 46%,#f0e5fc 100%);min-
 @media(max-width:640px){.levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.level-icon,.level:last-child .level-icon{width:36px;height:36px;flex-basis:36px}.level-name{font-size:12px}.game-layout{gap:18px}.board-hint{top:42%}}
 
 .audio-controls{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}.audio-controls .icon-button{margin-left:0}@media(max-width:640px){.audio-controls{gap:6px}.audio-controls .icon-button{font-size:12px;padding:8px}.audio-controls .icon-button span{margin-left:5px}}
+
+/* Keep the canvas ratio exact, including the surrounding border. */
+.board-wrap{aspect-ratio:auto}canvas{height:auto}
+/* Touch tablets can report a desktop-width viewport, especially in landscape. */
+@media(max-width:1100px),(hover:none) and (pointer:coarse){
+  .shell{max-width:540px;padding:0 16px}
+  .topbar{height:68px;gap:10px}
+  .brand{font-size:24px;white-space:nowrap}
+  .brand-icon{width:37px;height:37px;flex-basis:37px}
+  .edition,.intro,.evolution h2{display:none}
+  .audio-controls{gap:6px}
+  .audio-controls .icon-button{font-size:12px;padding:8px}
+  .audio-controls .icon-button span{margin-left:5px}
+  .community-note{font-size:12px;padding-top:8px}
+  .game-layout{display:flex;flex-direction:column;gap:20px;padding:18px 0 26px;width:100%;width:min(100%,max(300px,calc((100svh - 210px)*.685714)));margin:auto}
+  .play-column,.evolution{width:100%;min-width:0}
+  .scorebar{padding:0 4px 14px;gap:24px}
+  .scorebar strong{font-size:30px}
+  .next-orb{width:42px;height:42px}
+  .board-wrap{border-radius:22px}
+  .board-footer{margin-top:16px;font-size:12px}
+  .board-hint{font-size:13px;top:42%}
+  .evolution-heading{margin-bottom:10px}
+  .levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+  .level{flex-direction:column;gap:6px;padding:8px 2px;border-radius:9px;min-width:0}
+  .level-icon,.level:last-child .level-icon{width:36px;height:36px;flex-basis:36px;margin:0}
+  .level-name{writing-mode:horizontal-tb;font-size:12px;letter-spacing:0}
+}
