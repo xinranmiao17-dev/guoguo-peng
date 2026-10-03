@@ -23,3 +23,5 @@ body{background:linear-gradient(125deg,#fff8dc 0%,#fff9e8 46%,#f0e5fc 100%);min-
 /* 九级图鉴在手机上分行，保持名称与头像清楚。 */
 @media(max-width:1050px){.levels{display:grid;grid-template-columns:repeat(9,minmax(0,1fr))}}
 @media(max-width:640px){.levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.level-icon,.level:last-child .level-icon{width:36px;height:36px;flex-basis:36px}.level-name{font-size:12px}.game-layout{gap:18px}.board-hint{top:42%}}
+
+.audio-controls{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}.audio-controls .icon-button{margin-left:0}@media(max-width:640px){.audio-controls{gap:6px}.audio-controls .icon-button{font-size:12px;padding:8px}.audio-controls .icon-button span{margin-left:5px}}

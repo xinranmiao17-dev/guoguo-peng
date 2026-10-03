@@ -5,12 +5,12 @@
 <meta name="theme-color" content="#fff7d9"><meta name="description" content="瞄准、放下、合成。把九只团子一路合成，迎接最大的 ep果。">
 <title>果果碰 · 绳匠的团子挑战</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%237956a2'/%3E%3Ccircle cx='20' cy='20' r='14' fill='%23fff0ae'/%3E%3Ccircle cx='16' cy='18' r='2' fill='%237956a2'/%3E%3Ccircle cx='24' cy='18' r='2' fill='%237956a2'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=guoguo-robin-10">
+<link rel="stylesheet" href="style.css?v=guoguo-music-11">
 </head>
 <body>
 <main class="shell">
   <p class="community-note">进超绝雨果水仙群加v：<span>13355732803</span></p>
-  <header class="topbar"><a class="brand" href="./" aria-label="果果碰首页"><span class="brand-icon" aria-hidden="true"><img src="brand-head.png" alt=""></span> 果果碰</a><span class="edition">九个果果 · 困难挑战</span><button id="sound" class="icon-button" aria-label="开启音效" aria-pressed="false">音效 <span>关</span></button></header>
+  <header class="topbar"><a class="brand" href="./" aria-label="果果碰首页"><span class="brand-icon" aria-hidden="true"><img src="brand-head.png" alt=""></span> 果果碰</a><span class="edition">九个果果 · 困难挑战</span><div class="audio-controls"><button id="sound" data-audio-control class="icon-button" title="音效音量60%" aria-label="关闭音效" aria-pressed="true">音效 <span>开</span></button><button id="music" data-audio-control class="icon-button" title="背景音乐音量40%" aria-label="关闭背景音乐" aria-pressed="true">音乐 <span>开</span></button></div></header>
   <section class="game-layout" aria-label="果果碰合成游戏">
     <aside class="intro"><span class="eyebrow">绳匠大人，来碰一下</span><h1>果果相碰，<br><span>心动加倍。</span></h1><p class="intro-copy">让相同的果果碰到一起，<br>一直合成，直到装下整个夏天。</p><div class="goal"><span class="goal-label">终极 ep果</span><strong>09<span>级</span></strong><p>一路合成，让 ep果撑满泡泡世界。</p></div><div class="instructions"><span class="step-number">01</span><p>左右移动，找好落点</p><span class="step-number">02</span><p>松开手指，放下团子</p><span class="step-number">03</span><p>同级相碰，合成更大一级</p></div><p class="keyboard-note">键盘也能玩：← → 移动 · 空格放下</p></aside>
     <div class="play-column">
@@ -21,6 +21,7 @@
     <aside class="evolution"><div class="evolution-heading"><span class="eyebrow">合成图鉴</span><span id="progress">1 / 9</span></div><h2>九只果果，<br>越碰越心动。</h2><ol id="levels" class="levels"></ol></aside>
   </section>
 </main>
+<audio id="bgm" src="background-music.mp3" preload="metadata" loop></audio>
 <dialog id="restart-dialog"><h2>重新开始这一局？</h2><p>当前进度会清空，最高纪录会保留。</p><div class="dialog-actions"><button id="cancel-restart" class="text-button">继续玩</button><button id="confirm-restart" class="primary-button">重新开始</button></div></dialog>
-<script src="config.js?v=guoguo-robin-10"></script><script src="game.js?v=guoguo-robin-10"></script>
+<script src="config.js?v=guoguo-music-11"></script><script src="game.js?v=guoguo-music-11"></script>
 </body></html>

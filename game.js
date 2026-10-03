@@ -9,7 +9,7 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let balls = [], particles = [], score = 0, best = 0, highest = 0, state = 'playing';
   let current = randomLevel(), next = randomLevel(), aim = WIDTH / 2, cooldown = 0, danger = 0, elapsed = 0, id = 0;
-  let lastFrame = 0, accumulator = 0, sound = false, audio = null, restartWasPlaying = false;
+  let lastFrame = 0, accumulator = 0, sound = true, music = true, audio = null, restartWasPlaying = false;
   const heldKeys = new Set();
   const textures = levels.map(() => null), thumbnailURLs = levels.map(() => '');
   let loadedCount = 0;
@@ -57,6 +57,36 @@
       li.append(icon, name); return li;
     }));
   }
+  const bgm = $('bgm');
+  bgm.loop = true;
+  let musicSource = null, musicGain = null, audioUnlocked = false;
+  async function unlockAudio() {
+    try {
+      if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+      if (!musicSource) {
+        musicSource = audio.createMediaElementSource(bgm);
+        musicGain = audio.createGain(); musicGain.gain.value = .4;
+        musicSource.connect(musicGain); musicGain.connect(audio.destination);
+      }
+      // Both calls occur inside the gesture, before awaiting (including Safari).
+      const resumeAudio = audio.resume();
+      const playMusic = music && !document.hidden ? bgm.play() : Promise.resolve();
+      audioUnlocked = true;
+      await Promise.all([resumeAudio, playMusic]);
+      if (!music || document.hidden) bgm.pause();
+      if (sound) loadVoices().catch(() => {});
+    } catch (error) {
+      if (error.name !== 'NotAllowedError') $('status').textContent = '声音加载失败，可重新切换音效或音乐。';
+    }
+  }
+  function unlockOnGesture(event) {
+    if (event.target.closest?.('[data-audio-control]')) return;
+    if ((sound || music) && (!audioUnlocked || audio?.state !== 'running' || (music && bgm.paused))) unlockAudio();
+  }
+  document.addEventListener('pointerdown', unlockOnGesture, { capture: true });
+  document.addEventListener('keydown', unlockOnGesture, { capture: true });
+  bgm.addEventListener('error', () => { if (music) $('status').textContent = '背景音乐加载失败，可关闭后重新开启。'; });
+  window.addEventListener('pagehide', () => { bgm.pause(); stopVoice(); });
   // Video phrases, in source order; platform outro is excluded.
   const voiceSlices = [[.10,1.12],[1.34,.96],[2.38,.80],[3.22,.67],[3.91,.45],[4.35,.64],[5.02,1.25],[6.49,1.57],[8.48,2.62]];
   let voiceBuffer = null, voiceLoading = null, activeVoice = null, voiceRequest = 0;
@@ -80,7 +110,7 @@
       if (!sound || request !== voiceRequest || state === 'paused' || state === 'lost') return;
       const source = audio.createBufferSource(), gain = audio.createGain();
       const [offset, duration] = voiceSlices[level];
-      source.buffer = buffer; gain.gain.value = .8;
+      source.buffer = buffer; gain.gain.value = .6;
       source.connect(gain); gain.connect(audio.destination); activeVoice = source;
       source.onended = () => { source.disconnect(); gain.disconnect(); if (activeVoice === source) activeVoice = null; };
       source.start(0, offset, duration);
@@ -226,8 +256,28 @@
   $('cancel-restart').onclick = () => $('restart-dialog').close();
   $('confirm-restart').onclick = () => { $('restart-dialog').close(); restart(); };
   $('restart-dialog').addEventListener('close', () => { if (restartWasPlaying) lastFrame = 0; });
-  $('sound').onclick = async () => { try { if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)(); await audio.resume(); sound = !sound; $('sound').setAttribute('aria-pressed', String(sound)); $('sound').setAttribute('aria-label', sound ? '关闭音效' : '开启音效'); $('sound').querySelector('span').textContent = sound ? '开' : '关'; if (sound) tone(current); else stopVoice(); } catch { $('status').textContent = '当前浏览器暂不支持音效。'; } };
-  document.addEventListener('visibilitychange', () => { if (document.hidden && state === 'playing') pause(); lastFrame = 0; });
+  $('sound').onclick = async () => {
+    sound = !sound;
+    $('sound').setAttribute('aria-pressed', String(sound));
+    $('sound').setAttribute('aria-label', sound ? '关闭音效' : '开启音效');
+    $('sound').querySelector('span').textContent = sound ? '开' : '关';
+    if (!sound) stopVoice();
+    await unlockAudio();
+    if (sound) tone(current);
+  };
+  $('music').onclick = async () => {
+    music = !music;
+    $('music').setAttribute('aria-pressed', String(music));
+    $('music').setAttribute('aria-label', music ? '关闭背景音乐' : '开启背景音乐');
+    $('music').querySelector('span').textContent = music ? '开' : '关';
+    if (!music) bgm.pause();
+    await unlockAudio();
+  };
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { bgm.pause(); if (state === 'playing') pause(); }
+    else if (music && audioUnlocked) unlockAudio();
+    lastFrame = 0;
+  });
   const modelContext = document.modelContext;
   if (modelContext?.registerTool) { const lifecycle = new AbortController(); window.addEventListener('pagehide', () => lifecycle.abort(), { once: true });
     try { Promise.resolve(modelContext.registerTool({ name: 'drop_round', title: '放下一颗圆圆', description: '在游戏区指定横向位置放下当前圆形。位置范围为0至480，游戏进行中且冷却结束时可用。', inputSchema: { type: 'object', properties: { x: { type: 'number', minimum: 0, maximum: 480 } }, required: ['x'], additionalProperties: false }, annotations: { readOnlyHint: false, untrustedContentHint: false }, execute(input) { if (!input || typeof input.x !== 'number' || !Number.isFinite(input.x) || input.x < 0 || input.x > WIDTH) throw new Error('x 必须在 0 至 480 之间。'); if (!drop(input.x)) throw new Error('游戏暂停、结束或圆形还在冷却，请稍后再试。'); return { score, count: balls.length, nextLevel: current + 1, state }; } }, { signal: lifecycle.signal })).catch(() => {}); } catch {} }
